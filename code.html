@@ -114,13 +114,113 @@
   }
 
   /* SCREEN: QUESTION */
-  #screen-question, #screen-spread, #screen-reading {
+  #screen-apikey, #screen-question, #screen-spread, #screen-reading {
     display: none;
     animation: fadeIn 0.6s ease;
   }
-  #screen-question.active, #screen-spread.active, #screen-reading.active {
+  #screen-apikey.active, #screen-question.active, #screen-spread.active, #screen-reading.active {
     display: block;
   }
+
+  /* API KEY SCREEN */
+  .apikey-box {
+    background: linear-gradient(135deg, #1e1208, #0f0a05);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 32px 28px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .apikey-box p {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .apikey-box a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .apikey-box a:hover { text-decoration: underline; }
+
+  .key-input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .key-input-wrap input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'IM Fell English', serif;
+    font-size: 0.9rem;
+    padding: 12px 44px 12px 14px;
+    transition: border-color 0.3s;
+    letter-spacing: 0.04em;
+  }
+
+  .key-input-wrap input:focus {
+    outline: none;
+    border-color: rgba(201,168,76,0.5);
+  }
+
+  .key-input-wrap input::placeholder { color: var(--text-dim); font-style: italic; }
+
+  .toggle-key {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .toggle-key:hover { color: var(--gold); }
+
+  .key-note {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .api-key-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-style: italic;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    float: right;
+  }
+
+  .api-key-indicator:hover { background: rgba(201,168,76,0.06); color: var(--gold); }
+
+  .dot-status {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .dot-status.active { background: #5c9e5c; box-shadow: 0 0 6px rgba(92,158,92,0.5); }
 
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -626,8 +726,29 @@
     <div class="divider"></div>
   </header>
 
+  <!-- SCREEN 0: API KEY -->
+  <div id="screen-apikey">
+    <div class="apikey-box">
+      <label style="display:block;font-family:'Cinzel Decorative',cursive;font-size:0.8rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:14px;">✦ CHAVE DA API ANTHROPIC</label>
+      <p>Para usar este app fora do Claude.ai, você precisa de uma chave de API da Anthropic. Ela fica salva apenas no seu navegador (<code style="color:var(--gold);font-size:0.85em">localStorage</code>) e nunca é enviada a nenhum servidor além da Anthropic.</p>
+      <p>Não tem uma chave? <a href="https://console.anthropic.com/settings/keys" target="_blank">Crie em console.anthropic.com →</a></p>
+      <div class="key-input-wrap">
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
+        <button class="toggle-key" onclick="toggleKeyVisibility()" title="Mostrar/ocultar">👁</button>
+      </div>
+      <p class="key-note">⚠ Use apenas para uso pessoal. Não compartilhe o arquivo com sua chave visível.</p>
+      <button class="btn-primary" onclick="saveApiKey()">✦ Salvar e Continuar</button>
+    </div>
+  </div>
+
   <!-- SCREEN 1: CHOOSE SPREAD -->
   <div id="screen-question" class="active">
+    <div style="text-align:right;margin-bottom:4px;">
+      <span class="api-key-indicator" onclick="showScreen('screen-apikey')" title="Alterar chave">
+        <span class="dot-status" id="key-dot"></span>
+        <span id="key-label">chave não configurada</span>
+      </span>
+    </div>
     <p class="spread-intro">Escolha o tipo de tiragem que deseja fazer esta vez</p>
     <div class="spread-options">
       <button class="spread-btn" onclick="selectSpread(1, 'Carta do Momento', ['O Presente'])">
@@ -828,56 +949,138 @@ function goToReading() {
   callClaude(question);
 }
 
-async function callClaude(question) {
-  const cardList = drawnCards.map((c, i) =>
-    `${i+1}. **${spreadPositions[i]}**: ${c.name} (${c.keywords.join(', ')})`
-  ).join('\n');
+// ── INTERPRETAÇÕES LOCAIS ────────────────────────────────────────────────────
 
-  const prompt = question
-    ? `Você é uma leitora cigana sábia e sensível. Faça uma leitura do Baralho Cigano Lenormand.
+const CARD_MEANINGS = {
+  1:  { pos: "Uma novidade se aproxima — uma mensagem, um movimento, algo que chega sem avisar. O Cavaleiro traz velocidade ao que estava parado.", neg: "A pressa pode ser traiçoeira. Nem toda notícia que chega é bem-vinda; avalie antes de agir." },
+  2:  { pos: "A sorte está ao seu lado, mesmo que de formas pequenas e discretas. O Trevo lembra que as alegrias simples são sementes de grandes colheitas.", neg: "Não desperdice as pequenas oportunidades esperando pelas grandes." },
+  3:  { pos: "Uma viagem, mudança ou transação se anuncia. O Navio convida ao movimento — o horizonte reserva algo valioso para quem ousa partir.", neg: "A distância pode estar criando afastamento onde deveria haver encontro." },
+  4:  { pos: "O lar e a família são seu alicerce neste momento. A Casa traz proteção, conforto e a segurança de raízes sólidas.", neg: "Questões domésticas ou familiares pedem atenção. Algo no lar precisa ser cuidado." },
+  5:  { pos: "A Árvore fala de saúde, crescimento lento e raízes profundas. O que você planta hoje, colherá com paciência.", neg: "A saúde pede cuidado. Não ignore sinais do corpo — ele fala antes que a mente escute." },
+  6:  { pos: "As Nuvens passam — a confusão atual é temporária. Aguarde clareza antes de tomar decisões importantes.", neg: "Há incerteza e névoa cobrindo os fatos. Nem tudo é o que parece; desconfie de aparências." },
+  7:  { pos: "A Serpente traz sabedoria e transformação. Algo está mudando em profundidade, e essa mudança, embora incômoda, é necessária.", neg: "Cuidado com traição ou inveja ao redor. Alguém pode não ser tão leal quanto aparenta." },
+  8:  { pos: "O Caixão anuncia o fim de um ciclo — não morte, mas transformação. O que termina agora abre espaço para o novo.", neg: "Um encerramento doloroso, uma perda ou separação. Permita-se lamentar para então seguir." },
+  9:  { pos: "O Buquê traz alegria, presentes e beleza. Boas energias cercam você — reconheça e celebre.", neg: "A superficialidade pode estar mascarando questões mais profundas. A beleza nem sempre é sincera." },
+  10: { pos: "A Foice pede decisão. Um corte necessário, uma escolha que liberta. Tenha coragem de aparar o que já não serve.", neg: "Perigo de decisões precipitadas ou rupturas abruptas. Pese bem antes de cortar." },
+  11: { pos: "O Açoite traz energia intensa — um alerta necessário, uma tensão que impulsiona a mudança.", neg: "Conflito e discórdia rondam este momento. Evite confrontos desnecessários." },
+  12: { pos: "Os Pássaros falam de conversas, acordos e comunicação. Palavras trocadas agora têm peso — use-as bem.", neg: "Fofoca e ruídos de comunicação podem distorcer a realidade. Ouça, mas filtre." },
+  13: { pos: "A Criança anuncia um novo começo cheio de inocência e potencial. Algo novo está nascendo em sua vida.", neg: "Imaturidade ou ingenuidade podem ser obstáculos. Nem todo começo é bem planejado." },
+  14: { pos: "A Raposa pede astúcia. Estratégia e inteligência são suas melhores ferramentas neste momento.", neg: "Desconfie de armadilhas — alguém pode estar sendo desonesto com você." },
+  15: { pos: "O Urso representa força, autoridade e proteção. Você tem — ou encontrará — apoio de alguém poderoso.", neg: "Excesso de controle ou dominação pode estar sufocando situações ao redor." },
+  16: { pos: "A Estrela brilha com esperança e destino. Um guia luminoso aponta o caminho — confie em sua intuição.", neg: "Idealismo excessivo pode afastar você da realidade. Sonhe, mas mantenha os pés no chão." },
+  17: { pos: "A Cegonha traz renovação e transformação positiva. Mudanças chegam para trazer algo melhor.", neg: "Mudanças abruptas podem causar instabilidade. Adapte-se com cautela." },
+  18: { pos: "O Cachorro fala de amizade verdadeira e lealdade. Uma pessoa de confiança está ao seu lado.", neg: "Cuidado com quem se diz amigo — nem toda lealdade é genuína." },
+  19: { pos: "A Torre representa independência e clareza de propósito. Encontre força na sua própria companhia.", neg: "Isolamento excessivo ou orgulho podem estar impedindo conexões importantes." },
+  20: { pos: "O Jardim convida ao social — encontros, eventos e conexões trazem oportunidades valiosas.", neg: "Exposição excessiva ou pressão social podem estar drenando sua energia." },
+  21: { pos: "A Montanha exige persistência. O obstáculo existe, mas pode ser superado com determinação.", neg: "Bloqueios e demoras são inevitáveis agora. Insistir pode desgastar — avalie desvios." },
+  22: { pos: "Os Caminhos anunciam uma escolha importante. Duas possibilidades se apresentam — confie em sua intuição para decidir.", neg: "A indecisão pode ser paralisante. Escolher um caminho, mesmo imperfeito, é melhor que ficar parado." },
+  23: { pos: "Os Ratos alertam para perdas ou desgastes — mas ao percebê-los, você pode agir antes que se agravem.", neg: "Algo está sendo consumido silenciosamente — energia, recursos, relacionamentos. Identifique a fonte." },
+  24: { pos: "O Coração fala de amor, sentimento e paixão. Emoções profundas guiam este momento — acolha-as.", neg: "Feridas emocionais ou amor não correspondido pedem cuidado e cura." },
+  25: { pos: "O Anel representa compromisso, contratos e alianças. Um vínculo importante se fortalece ou se forma.", neg: "Um contrato ou relacionamento pode estar aprisionando em vez de nutrir. Reavalie." },
+  26: { pos: "O Livro guarda segredos prontos para ser revelados. Conhecimento oculto virá à tona no momento certo.", neg: "Algo ainda não foi dito — um segredo pode estar influenciando os acontecimentos." },
+  27: { pos: "A Carta anuncia notícias, documentos e informações importantes que trazem novidades relevantes.", neg: "Uma notícia inesperada ou um documento pendente pode trazer complicações." },
+  28: { pos: "O Senhor representa uma figura masculina madura, protetora e parceira — pode ser você ou alguém próximo.", neg: "Uma figura de autoridade pode estar exercendo influência excessiva ou negativa." },
+  29: { pos: "A Senhora representa intuição feminina, cuidado materno e sabedoria emocional.", neg: "Excesso de emoção ou manipulação sutil podem estar nublando o julgamento." },
+  30: { pos: "Os Lírios trazem paz, pureza e equilíbrio. Um momento de tranquilidade e harmonia se aproxima.", neg: "Uma paz superficial pode estar escondendo tensões não resolvidas." },
+  31: { pos: "O Sol ilumina tudo com sucesso, alegria e clareza. Um período de conquistas e reconhecimento se abre.", neg: "Excesso de exposição ou vaidade podem ofuscar o que realmente importa." },
+  32: { pos: "A Lua fala ao inconsciente — sonhos, intuição e emoções profundas têm mensagens valiosas agora.", neg: "Ilusões e medos noturnos podem estar distorcendo a percepção da realidade." },
+  33: { pos: "A Chave revela a solução — algo que estava bloqueado se abre. A resposta que você buscava está próxima.", neg: "Uma porta se fecha definitivamente. Aceitar isso é o primeiro passo para encontrar outra saída." },
+  34: { pos: "O Peixe traz abundância, fluxo financeiro e prosperidade. Recursos chegam de onde menos se espera.", neg: "Gastos excessivos ou negócios arriscados podem comprometer a estabilidade." },
+  35: { pos: "A Âncora garante estabilidade e firmeza. Você está no lugar certo — permaneça e construa.", neg: "O que deveria ser porto seguro pode estar se tornando aprisionamento. Avalie se fica por escolha." },
+  36: { pos: "A Cruz fala de karma e destino — o que foi semeado agora se colhe. Há uma lição maior neste momento.", neg: "Uma provação karma existe. Enfrente-a com fé — ela tem propósito." }
+};
 
-Tiragem: ${currentSpread.name}
-Pergunta: "${question}"
+// Frases de abertura variadas
+const ABERTURAS = [
+  "As cartas se dispõem diante de você e revelam",
+  "O baralho fala com clareza nesta tiragem",
+  "Os mistérios se desfazem carta a carta",
+  "A leitura traz uma mensagem precisa",
+  "O destino mostra seu rosto nesta tiragem"
+];
 
-Cartas:
-${cardList}
+// Frases de transição
+const TRANSICOES = [
+  "Avançando na leitura,",
+  "As cartas seguintes acrescentam:",
+  "O fio invisível que une as cartas revela ainda",
+  "Há mais a ser dito —",
+  "A mensagem se aprofunda:"
+];
 
-Escreva uma interpretação em português, fluida e poética, em 3 parágrafos. Conecte as cartas entre si e relate à pergunta. Seja perspicaz e esperançosa, mas honesta. Não liste as cartas — narre como uma história coerente.`
-    : `Você é uma leitora cigana sábia e sensível. Faça uma leitura do Baralho Cigano Lenormand.
+// Frases de encerramento
+const ENCERRAMENTOS = [
+  "As cartas sussurram que o momento pede atenção e intenção. Confie no que veio à tona.",
+  "Que esta leitura ilumine seu caminho. O que as cartas revelam, só você pode transformar.",
+  "A sabedoria cigana diz: nada é permanente — nem o obstáculo, nem a benção. Siga em frente.",
+  "Use esta mensagem como lanterna, não como destino fixo. O livre-arbítrio é sempre seu.",
+  "As cartas mostraram o que está em movimento. O que fazer com isso está em suas mãos."
+];
 
-Tiragem: ${currentSpread.name}
-(Leitura geral — sem pergunta específica)
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-Cartas:
-${cardList}
+function generateLocalReading(question) {
+  const cards = drawnCards;
+  const positions = spreadPositions;
+  const n = cards.length;
 
-Escreva uma interpretação em português, fluida e poética, em 3 parágrafos. Conecte as cartas entre si e revele a mensagem do momento para quem consulta. Seja perspicaz e esperançosa, mas honesta. Não liste as cartas — narre como uma história coerente.`;
+  // Determina tom geral (positivo, misto, desafiador) baseado nas cartas
+  const positiveIds = new Set([2,4,5,9,12,13,15,16,17,18,20,24,25,30,31,33,34,35]);
+  const challengingIds = new Set([6,7,8,10,11,21,23,36]);
+  let posCount = cards.filter(c => positiveIds.has(c.id)).length;
+  let chalCount = cards.filter(c => challengingIds.has(c.id)).length;
+  const tone = posCount >= chalCount ? 'pos' : 'neg';
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.find(b => b.type === 'text')?.text || 'As cartas guardam silêncio por ora. Tente novamente.';
+  const paragraphs = [];
 
+  // ── PARÁGRAFO 1: contexto / carta principal ──────────────────────────────
+  const c0 = cards[0];
+  const m0 = CARD_MEANINGS[c0.id];
+  let p1 = `${pick(ABERTURAS)}: ${m0[tone]}`;
+  if (question) p1 += ` Em relação à sua pergunta sobre "${question}", esta é a energia central que permeia a situação.`;
+  paragraphs.push(p1);
+
+  // ── PARÁGRAFO 2: cartas do meio / desenvolvimento ────────────────────────
+  if (n === 1) {
+    // carta única: aprofunda
+    const kws = c0.keywords.slice(0, 3).join(', ');
+    paragraphs.push(`${c0.name} carrega as energias de ${kws}. Reflita sobre como essas forças aparecem na sua vida agora — às vezes uma única carta diz mais do que um volume inteiro de palavras.`);
+  } else if (n === 3) {
+    const c1 = cards[1]; const m1 = CARD_MEANINGS[c1.id];
+    const c2 = cards[2]; const m2 = CARD_MEANINGS[c2.id];
+    paragraphs.push(`${pick(TRANSICOES)} o presente, representado por ${c1.name}, revela que ${m1[tone].toLowerCase()} Já o futuro, guardado por ${c2.name}, aponta para ${m2[tone].toLowerCase()}`);
+  } else if (n >= 5) {
+    const mid = cards.slice(1, 4);
+    const midText = mid.map((c, i) => {
+      const m = CARD_MEANINGS[c.id];
+      return `${c.name} (${positions[i+1].toLowerCase()}) indica ${m[tone].toLowerCase()}`;
+    }).join('; ');
+    paragraphs.push(`${pick(TRANSICOES)} ${midText}.`);
+  }
+
+  // ── PARÁGRAFO 3: síntese e encerramento ──────────────────────────────────
+  if (n >= 3) {
+    const last = cards[n-1];
+    const mLast = CARD_MEANINGS[last.id];
+    paragraphs.push(`Por fim, ${last.name} como ${positions[n-1].toLowerCase()} entrega a mensagem derradeira: ${mLast[tone].toLowerCase()} ${pick(ENCERRAMENTOS)}`);
+  } else {
+    paragraphs.push(pick(ENCERRAMENTOS));
+  }
+
+  return paragraphs.join('\n\n');
+}
+
+function callClaude(question) {
+  // Pequeno delay para dar sensação de "consulta"
+  setTimeout(() => {
+    const text = generateLocalReading(question);
     const box = document.getElementById('interpretation-box');
     box.innerHTML = `
       <h3>✦ A LEITURA DAS CARTAS</h3>
       <div class="interpretation-text">${text.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
       <div class="card-keywords">${drawnCards.flatMap(c => c.keywords).slice(0, 8).map(k => `<span class="keyword-pill">${k}</span>`).join('')}</div>
     `;
-  } catch(e) {
-    document.getElementById('interpretation-box').innerHTML = `
-      <h3>✦ A LEITURA DAS CARTAS</h3>
-      <div class="interpretation-text"><p>As forças etéreas interferiram na conexão. Por favor, tente novamente.</p></div>
-    `;
-  }
+  }, 1800);
 }
 
 function showScreen(id) {
