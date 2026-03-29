@@ -19,7 +19,7 @@
     --text-dim: #9e8a5e;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--deep);
@@ -27,15 +27,43 @@
     font-family: 'IM Fell English', serif;
     min-height: 100vh;
     overflow-x: hidden;
-    touch-action: manipulation;
+    cursor: default;
   }
 
-  /* Estrelas e Fumaça (Mantidos do seu original) */
+  /* STARS BG */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: radial-gradient(1px 1px at 10% 15%, rgba(201,168,76,0.6) 0%, transparent 100%), radial-gradient(1px 1px at 55% 75%, rgba(201,168,76,0.5) 0%, transparent 100%);
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(201,168,76,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 8%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 30%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 55%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 85% 20%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 70%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 80%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 90%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 75%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 70% 85%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 60%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 50%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 42%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 10%, rgba(201,168,76,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SMOKE WISPS */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(139,26,26,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(201,168,76,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 30% at 50% 100%, rgba(139,26,26,0.08) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -48,42 +76,195 @@
     padding: 20px 16px 60px;
   }
 
-  header { text-align: center; padding: 32px 0 20px; }
-  h1 { font-family: 'Cinzel Decorative', cursive; font-size: clamp(1.4rem, 5vw, 2.4rem); color: var(--gold-light); }
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 32px 0 20px;
+  }
 
-  /* Telas */
-  .screen { display: none; animation: fadeIn 0.6s ease; }
-  .screen.active { display: block; }
+  .ornament {
+    color: var(--gold);
+    font-size: 1.2em;
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+  }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  h1 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.4rem, 5vw, 2.4rem);
+    color: var(--gold-light);
+    text-shadow: 0 0 30px rgba(201,168,76,0.4), 0 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 0.05em;
+    margin: 8px 0;
+  }
 
-  /* Grid de Opções */
+  .subtitle {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 16px auto;
+    opacity: 0.6;
+  }
+
+  /* SCREENS */
+  #screen-question, #screen-spread, #screen-reading {
+    display: none;
+    animation: fadeIn 0.6s ease;
+  }
+  #screen-question.active, #screen-spread.active, #screen-reading.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SPREAD SELECTION */
+  .spread-intro {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
   .spread-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
-    margin-top: 20px;
+    margin-bottom: 28px;
   }
 
   .spread-btn {
     background: linear-gradient(135deg, #1e1208, #0f0a05);
     border: 1px solid var(--card-border);
     border-radius: 8px;
-    padding: 20px;
+    padding: 20px 16px;
     cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
     color: var(--text);
-    transition: 0.3s;
+    font-family: 'IM Fell English', serif;
   }
 
-  .spread-btn:active { transform: scale(0.98); background: #2a1a0a; }
+  .spread-btn:hover {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, #2a1a0a, #1a0f05);
+    box-shadow: 0 0 20px rgba(201,168,76,0.15);
+    transform: translateY(-2px);
+  }
 
-  /* Slots e Cartas */
+  .spread-btn .spread-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+
+  .spread-btn .spread-desc {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .spread-btn .spread-icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  /* QUESTION INPUT */
+  .question-box {
+    background: linear-gradient(135deg, #1e1208, #0f0a05);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .question-box label {
+    display: block;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.8rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'IM Fell English', serif;
+    font-size: 1rem;
+    padding: 14px;
+    resize: none;
+    height: 90px;
+    transition: border-color 0.3s;
+    line-height: 1.5;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: rgba(201,168,76,0.5);
+    box-shadow: 0 0 15px rgba(201,168,76,0.08);
+  }
+
+  textarea::placeholder { color: var(--text-dim); font-style: italic; }
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 6px;
+    color: #0a0608;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+    box-shadow: 0 0 25px rgba(201,168,76,0.3);
+    transform: translateY(-1px);
+  }
+
+  /* CARD DECK AREA */
+  .deck-area {
+    text-align: center;
+    margin: 20px 0 30px;
+  }
+
+  .deck-instruction {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
   .slots-area {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
-    margin: 20px 0;
+    margin-bottom: 24px;
   }
 
   .card-slot {
@@ -92,160 +273,493 @@
     border: 2px dashed rgba(201,168,76,0.25);
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s;
   }
 
+  .card-slot.filled {
+    border: 2px solid rgba(201,168,76,0.5);
+    cursor: pointer;
+  }
+
+  .card-slot.filled:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(201,168,76,0.2);
+    transform: translateY(-3px);
+  }
+
+  .slot-label {
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    margin-top: 6px;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  .slot-number {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.55rem;
+    color: rgba(201,168,76,0.4);
+    margin-bottom: 4px;
+  }
+
+  /* PLAYING CARD */
   .playing-card {
-    width: 84px;
-    height: 124px;
+    width: 86px;
+    height: 126px;
+    border-radius: 7px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .card-face {
+    width: 100%;
+    height: 100%;
     background: linear-gradient(145deg, #1f1108, #0d0703);
-    border: 1px solid var(--gold);
+    border: 1px solid var(--card-border);
     border-radius: 7px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    animation: cardReveal 0.4s ease-out;
+    padding: 6px 4px;
+    text-align: center;
   }
 
+  .card-symbol {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .card-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.48rem;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+  }
+
+  .card-back {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #1a0d08, #0d0703);
+    border: 1px solid var(--card-border);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-back::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(201,168,76,0.03) 4px, rgba(201,168,76,0.03) 5px),
+      repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(201,168,76,0.03) 4px, rgba(201,168,76,0.03) 5px);
+  }
+
+  /* CARD PILE */
   .card-pile {
+    position: relative;
     width: 90px;
     height: 130px;
-    margin: 20px auto;
-    position: relative;
+    margin: 0 auto 8px;
     cursor: pointer;
-    animation: glow-pulse 3s infinite;
   }
 
   .pile-layer {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(145deg, #2a1a0a, #1a0f05);
+    width: 86px;
+    height: 126px;
+    border-radius: 7px;
+    background: linear-gradient(145deg, #1a0d08, #0d0703);
     border: 1px solid var(--card-border);
-    border-radius: 8px;
+    transition: all 0.3s;
   }
 
-  .pile-layer::after { content: '🔮'; display: flex; align-items: center; justify-content: center; height: 100%; font-size: 2rem; }
+  .pile-layer:nth-child(3) { top: 0px; left: 2px; }
+  .pile-layer:nth-child(2) { top: -2px; left: 1px; }
+  .pile-layer:nth-child(1) { top: -4px; left: 0px; background: linear-gradient(145deg, #2a1a0a, #1a0f05); }
 
-  /* Interpretação */
+  .pile-layer:nth-child(1)::before {
+    content: '🔮';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+  }
+
+  .pile-layer:nth-child(1)::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 4px;
+  }
+
+  .card-pile:hover .pile-layer:nth-child(1) {
+    box-shadow: 0 0 25px rgba(201,168,76,0.25);
+    transform: translateY(-3px);
+  }
+
+  /* READING AREA */
+  .reading-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .reading-header .question-display {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-top: 8px;
+  }
+
+  .cards-revealed {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .revealed-card {
+    width: 120px;
+    text-align: center;
+    animation: cardReveal 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(20px) rotateY(90deg); }
+    to { opacity: 1; transform: translateY(0) rotateY(0); }
+  }
+
+  .revealed-card .big-card {
+    width: 120px;
+    height: 175px;
+    background: linear-gradient(155deg, #2a1808, #0f0804);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.1);
+    position: relative;
+    overflow: hidden;
+    padding: 10px 6px;
+  }
+
+  .revealed-card .big-card::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 6px;
+  }
+
+  .revealed-card .big-symbol {
+    font-size: 2.8rem;
+    margin-bottom: 6px;
+    line-height: 1;
+    z-index: 1;
+  }
+
+  .revealed-card .big-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.58rem;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    text-align: center;
+    line-height: 1.4;
+    z-index: 1;
+  }
+
+  .revealed-card .card-position {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* INTERPRETATION */
   .interpretation {
-    background: rgba(26, 16, 10, 0.9);
-    border-left: 3px solid var(--gold);
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 0 8px 8px 0;
+    background: linear-gradient(135deg, #1a100a, #0d0806);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .interpretation::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--gold-dark), var(--gold), var(--gold-dark));
+  }
+
+  .interpretation h3 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.8rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    padding-left: 14px;
+  }
+
+  .interpretation-text {
+    font-size: 0.97rem;
+    line-height: 1.8;
+    color: var(--text);
+    font-style: italic;
+    padding-left: 14px;
+  }
+
+  .interpretation-text p { margin-bottom: 14px; }
+  .interpretation-text p:last-child { margin-bottom: 0; }
+
+  .loading-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 0.9rem;
+    padding-left: 14px;
+  }
+
+  .loading-dots::after {
+    content: '';
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0% { content: ''; }
+    33% { content: '.'; }
+    66% { content: '..'; }
+    100% { content: '...'; }
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: 'IM Fell English', serif;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-style: italic;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    box-shadow: 0 0 15px rgba(201,168,76,0.1);
+  }
+
+  .actions { text-align: center; margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* CARD KEYWORD PILLS */
+  .card-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 14px 0 0;
+    padding-left: 14px;
   }
 
   .keyword-pill {
-    display: inline-block;
-    background: rgba(201,168,76,0.1);
-    padding: 4px 10px;
-    border-radius: 15px;
-    font-size: 0.75rem;
-    margin: 4px;
+    background: rgba(201,168,76,0.08);
     border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.73rem;
+    color: var(--gold);
+    font-style: italic;
   }
 
-  .btn-primary {
-    width: 100%;
-    padding: 15px;
-    background: var(--gold-dark);
-    border: none;
-    color: black;
-    font-family: 'Cinzel Decorative';
-    border-radius: 5px;
-    margin-top: 20px;
+  /* GLOW pulse on pile */
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(201,168,76,0.1); }
+    50% { box-shadow: 0 0 30px rgba(201,168,76,0.3); }
   }
 
-  @keyframes glow-pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; box-shadow: 0 0 20px var(--gold-dark); } }
-  @keyframes cardReveal { from { transform: scale(0.5) rotateY(90deg); opacity: 0; } to { transform: scale(1) rotateY(0); opacity: 1; } }
+  .card-pile { animation: glow-pulse 3s ease infinite; }
 
+  /* responsive mobile */
   @media(max-width: 500px) {
-    .card-slot { width: 75px; height: 110px; }
-    .playing-card { width: 70px; height: 105px; }
-    .card-symbol { font-size: 1.5rem; }
-    .card-name { font-size: 0.5rem; }
+    header { padding: 20px 0 12px; }
+    h1 { font-size: 1.3rem; }
+    .container { padding: 12px 12px 50px; }
+    .spread-options { grid-template-columns: 1fr; gap: 10px; }
+    .spread-btn { padding: 14px 12px; }
+    .question-box { padding: 18px; }
+    .revealed-card { width: 90px; }
+    .revealed-card .big-card { width: 90px; height: 132px; }
+    .revealed-card .big-symbol { font-size: 2rem; }
+    .revealed-card .big-name { font-size: 0.5rem; }
+    .interpretation { padding: 18px; }
+    .card-slot { width: 80px; height: 116px; }
+    .playing-card { width: 76px; height: 112px; }
+    .slots-area { gap: 8px; }
+    .actions { flex-direction: column; align-items: center; }
+    .btn-secondary { width: 100%; text-align: center; }
   }
 </style>
 </head>
 <body>
-
 <div class="container">
   <header>
+    <div class="ornament">✦ ✦ ✦</div>
     <h1>Baralho Cigano</h1>
-    <p style="color:var(--text-dim)">As cartas falam — os astros guiam</p>
+    <p class="subtitle">As cartas falam — os astros guiam</p>
+    <div class="divider"></div>
   </header>
 
-  <div id="screen-question" class="screen active">
-    <p style="text-align:center">Escolha sua tiragem:</p>
+  <!-- SCREEN 1: CHOOSE SPREAD -->
+  <div id="screen-question" class="active">
+    <div id="spread-options-wrap">
+    <p class="spread-intro">Escolha o tipo de tiragem que deseja fazer esta vez</p>
     <div class="spread-options">
       <button class="spread-btn" onclick="selectSpread(1, 'Carta do Momento', ['O Presente'])">
-        <span>🕯️</span><br><b>Carta do Momento</b>
+        <span class="spread-icon">🕯️</span>
+        <div class="spread-name">Carta do Momento</div>
+        <div class="spread-desc">Uma carta que revela a energia do momento atual</div>
       </button>
-      <button class="spread-btn" onclick="selectSpread(3, 'Passado, Presente e Futuro', ['Passado','Presente','Futuro'])">
-        <span>⏳</span><br><b>Três Tempos</b>
+      <button class="spread-btn" onclick="selectSpread(3, 'Passado, Presente e Futuro', ['O Passado','O Presente','O Futuro'])">
+        <span class="spread-icon">⏳</span>
+        <div class="spread-name">Passado · Presente · Futuro</div>
+        <div class="spread-desc">Três cartas que revelam a jornada do tempo</div>
       </button>
       <button class="spread-btn" onclick="selectSpread(5, 'Cruz Cigana', ['Situação','Desafio','Passado','Futuro','Desfecho'])">
-        <span>✡️</span><br><b>Cruz Cigana</b>
+        <span class="spread-icon">✡️</span>
+        <div class="spread-name">Cruz Cigana</div>
+        <div class="spread-desc">Cinco cartas para uma visão profunda da questão</div>
       </button>
     </div>
   </div>
 
-  <div id="screen-spread" class="screen">
-    <div class="slots-area" id="slots-area"></div>
-    <div class="card-pile" id="card-pile" onclick="drawCard()">
-      <div class="pile-layer"></div>
+  <!-- SCREEN 2: DRAW CARDS -->
+  <div id="screen-spread">
+    <div class="deck-area">
+      <p class="deck-instruction" id="draw-instruction">Concentre-se em sua pergunta e clique no baralho para revelar as cartas</p>
+      <div class="slots-area" id="slots-area"></div>
+      <div class="card-pile" id="card-pile" onclick="drawCard()" ontouchstart="handleTouch(event)">
+        <div class="pile-layer"></div>
+        <div class="pile-layer"></div>
+        <div class="pile-layer"></div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:8px;font-style:italic;" id="pile-counter"></p>
     </div>
-    <p id="pile-counter" style="text-align:center; font-size:0.8rem; color:var(--text-dim)"></p>
-    <button class="btn-primary" id="reveal-btn" style="display:none" onclick="goToReading()">✦ REVELAR LEITURA</button>
+
+    <button class="btn-primary" id="reveal-btn" style="display:none" onclick="goToReading()">✦ Revelar a Leitura</button>
   </div>
 
-  <div id="screen-reading" class="screen">
-    <h2 id="reading-title" style="text-align:center; color:var(--gold)"></h2>
-    <div class="slots-area" id="cards-revealed"></div>
-    <div class="interpretation" id="interpretation-box">
-      <p>Embaralhando as energias...</p>
+  <!-- SCREEN 3: READING -->
+  <div id="screen-reading">
+    <div class="reading-header">
+      <div class="ornament">✦</div>
+      <h2 style="font-family:'Cinzel Decorative',cursive;font-size:1rem;color:var(--gold);margin:8px 0;letter-spacing:0.08em;" id="spread-name-display"></h2>
+      <p class="question-display" id="question-display"></p>
     </div>
-    <button class="btn-primary" onclick="resetAll()" style="background:transparent; border:1px solid var(--gold); color:var(--gold)">NOVA TIRAGEM</button>
+
+    <div class="cards-revealed" id="cards-revealed"></div>
+
+    <div class="interpretation" id="interpretation-box">
+      <h3>✦ A LEITURA DAS CARTAS</h3>
+      <div class="loading-text">
+        <span>As cartas sussurram seus segredos</span>
+        <span class="loading-dots"></span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-secondary" onclick="resetAll()">↩ Nova Tiragem</button>
+      <button class="btn-secondary" onclick="changeQuestion()">✦ Nova Pergunta</button>
+    </div>
   </div>
 </div>
 
 <script>
 const CARDS = [
-  { id: 1, name: "O Cavaleiro", symbol: "🐴", keywords: ["novidade","mensagem","movimento"] },
-  { id: 2, name: "O Trevo", symbol: "🍀", keywords: ["sorte","alegria","oportunidade"] },
-  { id: 3, name: "O Navio", symbol: "⛵", keywords: ["viagem","mudança","distância"] },
-  { id: 4, name: "A Casa", symbol: "🏠", keywords: ["lar","família","estabilidade"] },
-  { id: 5, name: "A Árvore", symbol: "🌳", keywords: ["saúde","crescimento","vitalidade"] },
-  { id: 6, name: "As Nuvens", symbol: "☁️", keywords: ["confusão","incerteza","dúvida"] },
-  { id: 7, name: "A Serpente", symbol: "🐍", keywords: ["sabedoria","inveja","transformação"] },
-  { id: 8, name: "O Caixão", symbol: "⚰️", keywords: ["fim","ciclos","encerramento"] },
-  { id: 9, name: "O Buquê", symbol: "💐", keywords: ["felicidade","presente","beleza"] },
-  { id: 10, name: "A Foice", symbol: "⚔️", keywords: ["corte","decisão","ruptura"] },
-  { id: 24, name: "O Coração", symbol: "❤️", keywords: ["amor","emoção","paixão"] },
-  { id: 31, name: "O Sol", symbol: "☀️", keywords: ["sucesso","clareza","alegria"] },
-  { id: 33, name: "A Chave", symbol: "🗝️", keywords: ["solução","abertura","resposta"] }
-  // Adicione as outras conforme necessário...
+  { id: 1, name: "O Cavaleiro", symbol: "🐴", keywords: ["novidade","mensagem","movimento","notícia"] },
+  { id: 2, name: "O Trevo", symbol: "🍀", keywords: ["sorte","pequenas alegrias","oportunidade"] },
+  { id: 3, name: "O Navio", symbol: "⛵", keywords: ["viagem","mudança","comércio","distância"] },
+  { id: 4, name: "A Casa", symbol: "🏠", keywords: ["lar","família","segurança","estabilidade"] },
+  { id: 5, name: "A Árvore", symbol: "🌳", keywords: ["saúde","crescimento","raízes","vitalidade"] },
+  { id: 6, name: "As Nuvens", symbol: "☁️", keywords: ["confusão","incerteza","obstáculo","dúvida"] },
+  { id: 7, name: "A Serpente", symbol: "🐍", keywords: ["traição","sabedoria","inveja","transformação"] },
+  { id: 8, name: "O Caixão", symbol: "⚰️", keywords: ["fim","transformação","encerramento","luto"] },
+  { id: 9, name: "O Buquê", symbol: "💐", keywords: ["felicidade","presente","amizade","beleza"] },
+  { id: 10, name: "A Foice", symbol: "⚔️", keywords: ["corte","decisão","perigo","separação"] },
+  { id: 11, name: "O Açoite", symbol: "⚡", keywords: ["conflito","advertência","energia","tensão"] },
+  { id: 12, name: "Os Pássaros", symbol: "🕊️", keywords: ["comunicação","fofoca","conversa","acordo"] },
+  { id: 13, name: "A Criança", symbol: "👶", keywords: ["novidade","inocência","começo","criatividade"] },
+  { id: 14, name: "A Raposa", symbol: "🦊", keywords: ["astúcia","trapaça","estratégia","cautela"] },
+  { id: 15, name: "O Urso", symbol: "🐻", keywords: ["força","autoridade","proteção","poder"] },
+  { id: 16, name: "A Estrela", symbol: "⭐", keywords: ["esperança","destino","guia","inspiração"] },
+  { id: 17, name: "A Cegonha", symbol: "🪹", keywords: ["mudança","renovação","novidade","transformação"] },
+  { id: 18, name: "O Cachorro", symbol: "🐕", keywords: ["amizade","lealdade","fidelidade","companheiro"] },
+  { id: 19, name: "A Torre", symbol: "🏰", keywords: ["solidão","isolamento","instituição","orgulho"] },
+  { id: 20, name: "O Jardim", symbol: "🌿", keywords: ["sociedade","eventos sociais","natureza","encontros"] },
+  { id: 21, name: "A Montanha", symbol: "⛰️", keywords: ["obstáculo","demora","desafio","persistência"] },
+  { id: 22, name: "Os Caminhos", symbol: "🛤️", keywords: ["escolha","decisão","caminho","alternativas"] },
+  { id: 23, name: "Os Ratos", symbol: "🐀", keywords: ["perda","roubo","desgaste","preocupação"] },
+  { id: 24, name: "O Coração", symbol: "❤️", keywords: ["amor","sentimento","paixão","emoção"] },
+  { id: 25, name: "O Anel", symbol: "💍", keywords: ["compromisso","contrato","aliança","relacionamento"] },
+  { id: 26, name: "O Livro", symbol: "📖", keywords: ["segredo","conhecimento","estudo","mistério"] },
+  { id: 27, name: "A Carta", symbol: "✉️", keywords: ["notícia","documento","comunicação","informação"] },
+  { id: 28, name: "O Senhor", symbol: "🧔", keywords: ["homem maduro","pai","autoridade","parceiro"] },
+  { id: 29, name: "A Senhora", symbol: "👩", keywords: ["mulher madura","mãe","intuição","parceira"] },
+  { id: 30, name: "Os Lírios", symbol: "🌸", keywords: ["paz","virtude","maturidade","pureza"] },
+  { id: 31, name: "O Sol", symbol: "☀️", keywords: ["sucesso","clareza","alegria","conquista"] },
+  { id: 32, name: "A Lua", symbol: "🌙", keywords: ["emoção","intuição","inconsciente","sonhos"] },
+  { id: 33, name: "A Chave", symbol: "🗝️", keywords: ["solução","abertura","destino","resposta"] },
+  { id: 34, name: "O Peixe", symbol: "🐟", keywords: ["abundância","dinheiro","fluxo","prosperidade"] },
+  { id: 35, name: "A Âncora", symbol: "⚓", keywords: ["estabilidade","persistência","segurança","firmeza"] },
+  { id: 36, name: "A Cruz", symbol: "✝️", keywords: ["karma","destino","fé","provação"] }
 ];
 
 let currentSpread = null;
+let spreadPositions = [];
 let drawnCards = [];
 let remaining = [];
 
 function selectSpread(count, name, positions) {
-  currentSpread = { count, name, positions };
+  currentSpread = { count, name };
+  spreadPositions = positions;
   drawnCards = [];
   remaining = [...CARDS].sort(() => Math.random() - 0.5);
-  
+
+  // Esconde opções ao selecionar
+  document.getElementById('spread-options-wrap').style.display = 'none';
+
   showScreen('screen-spread');
   renderSlots();
   updatePileCounter();
-  
-  // Reset do botão e do deck
-  document.getElementById('reveal-btn').style.display = 'none';
-  document.getElementById('card-pile').style.display = 'block';
 }
 
 function renderSlots() {
@@ -255,69 +769,236 @@ function renderSlots() {
     const slot = document.createElement('div');
     slot.className = 'card-slot';
     slot.id = `slot-${i}`;
-    slot.innerHTML = `<span style="font-size:0.6rem">${currentSpread.positions[i]}</span>`;
+    slot.innerHTML = `
+      <div class="slot-number">${i+1}</div>
+      <div class="slot-label">${spreadPositions[i]}</div>
+    `;
     area.appendChild(slot);
   }
 }
 
+function updatePileCounter() {
+  const needed = currentSpread.count - drawnCards.length;
+  const el = document.getElementById('pile-counter');
+  if (needed <= 0) el.textContent = '';
+  else el.textContent = `${drawnCards.length} de ${currentSpread.count} carta${currentSpread.count > 1 ? 's' : ''} revelada${drawnCards.length !== 1 ? 's' : ''}`;
+}
+
+function handleTouch(e) {
+  e.preventDefault();
+  drawCard();
+}
+
 function drawCard() {
   if (drawnCards.length >= currentSpread.count) return;
-
   const card = remaining.pop();
   const idx = drawnCards.length;
   drawnCards.push(card);
 
   const slot = document.getElementById(`slot-${idx}`);
+  slot.className = 'card-slot filled';
   slot.innerHTML = `
     <div class="playing-card">
-      <div class="card-symbol">${card.symbol}</div>
-      <div class="card-name" style="font-size:0.6rem; text-align:center">${card.name}</div>
+      <div class="card-face">
+        <div class="card-symbol">${card.symbol}</div>
+        <div class="card-name">${card.name}</div>
+      </div>
     </div>
+    <div class="slot-label">${spreadPositions[idx]}</div>
   `;
 
   updatePileCounter();
 
   if (drawnCards.length === currentSpread.count) {
-    document.getElementById('card-pile').style.display = 'none';
+    document.getElementById('card-pile').style.opacity = '0.3';
+    document.getElementById('card-pile').style.pointerEvents = 'none';
     document.getElementById('reveal-btn').style.display = 'block';
+    document.getElementById('draw-instruction').textContent = 'Todas as cartas foram escolhidas. Clique em Revelar.';
   }
-}
-
-function updatePileCounter() {
-  document.getElementById('pile-counter').textContent = `${drawnCards.length} de ${currentSpread.count} selecionadas`;
 }
 
 function goToReading() {
   showScreen('screen-reading');
-  document.getElementById('reading-title').textContent = currentSpread.name;
-  
-  const container = document.getElementById('cards-revealed');
-  container.innerHTML = '';
-  
-  drawnCards.forEach(card => {
-    const div = document.createElement('div');
-    div.className = 'card-slot';
-    div.innerHTML = `<div class="playing-card"><span>${card.symbol}</span><br><small>${card.name}</small></div>`;
-    container.appendChild(div);
+
+  document.getElementById('spread-name-display').textContent = `✦ ${currentSpread.name} ✦`;
+  document.getElementById('question-display').textContent = 'Leitura geral — a mensagem do momento';
+
+  const revealArea = document.getElementById('cards-revealed');
+  revealArea.innerHTML = '';
+  drawnCards.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'revealed-card';
+    el.style.animationDelay = `${i * 0.18}s`;
+    el.innerHTML = `
+      <div class="big-card">
+        <div class="big-symbol">${card.symbol}</div>
+        <div class="big-name">${card.name}</div>
+      </div>
+      <div class="card-position">${spreadPositions[i]}</div>
+    `;
+    revealArea.appendChild(el);
   });
 
-  // Simulação de leitura simplificada para performance mobile
+  callClaude();
+}
+
+// ── INTERPRETAÇÕES LOCAIS ────────────────────────────────────────────────────
+
+const CARD_MEANINGS = {
+  1:  { pos: "Uma novidade se aproxima — uma mensagem, um movimento, algo que chega sem avisar. O Cavaleiro traz velocidade ao que estava parado.", neg: "A pressa pode ser traiçoeira. Nem toda notícia que chega é bem-vinda; avalie antes de agir." },
+  2:  { pos: "A sorte está ao seu lado, mesmo que de formas pequenas e discretas. O Trevo lembra que as alegrias simples são sementes de grandes colheitas.", neg: "Não desperdice as pequenas oportunidades esperando pelas grandes." },
+  3:  { pos: "Uma viagem, mudança ou transação se anuncia. O Navio convida ao movimento — o horizonte reserva algo valioso para quem ousa partir.", neg: "A distância pode estar criando afastamento onde deveria haver encontro." },
+  4:  { pos: "O lar e a família são seu alicerce neste momento. A Casa traz proteção, conforto e a segurança de raízes sólidas.", neg: "Questões domésticas ou familiares pedem atenção. Algo no lar precisa ser cuidado." },
+  5:  { pos: "A Árvore fala de saúde, crescimento lento e raízes profundas. O que você planta hoje, colherá com paciência.", neg: "A saúde pede cuidado. Não ignore sinais do corpo — ele fala antes que a mente escute." },
+  6:  { pos: "As Nuvens passam — a confusão atual é temporária. Aguarde clareza antes de tomar decisões importantes.", neg: "Há incerteza e névoa cobrindo os fatos. Nem tudo é o que parece; desconfie de aparências." },
+  7:  { pos: "A Serpente traz sabedoria e transformação. Algo está mudando em profundidade, e essa mudança, embora incômoda, é necessária.", neg: "Cuidado com traição ou inveja ao redor. Alguém pode não ser tão leal quanto aparenta." },
+  8:  { pos: "O Caixão anuncia o fim de um ciclo — não morte, mas transformação. O que termina agora abre espaço para o novo.", neg: "Um encerramento doloroso, uma perda ou separação. Permita-se lamentar para então seguir." },
+  9:  { pos: "O Buquê traz alegria, presentes e beleza. Boas energias cercam você — reconheça e celebre.", neg: "A superficialidade pode estar mascarando questões mais profundas. A beleza nem sempre é sincera." },
+  10: { pos: "A Foice pede decisão. Um corte necessário, uma escolha que liberta. Tenha coragem de aparar o que já não serve.", neg: "Perigo de decisões precipitadas ou rupturas abruptas. Pese bem antes de cortar." },
+  11: { pos: "O Açoite traz energia intensa — um alerta necessário, uma tensão que impulsiona a mudança.", neg: "Conflito e discórdia rondam este momento. Evite confrontos desnecessários." },
+  12: { pos: "Os Pássaros falam de conversas, acordos e comunicação. Palavras trocadas agora têm peso — use-as bem.", neg: "Fofoca e ruídos de comunicação podem distorcer a realidade. Ouça, mas filtre." },
+  13: { pos: "A Criança anuncia um novo começo cheio de inocência e potencial. Algo novo está nascendo em sua vida.", neg: "Imaturidade ou ingenuidade podem ser obstáculos. Nem todo começo é bem planejado." },
+  14: { pos: "A Raposa pede astúcia. Estratégia e inteligência são suas melhores ferramentas neste momento.", neg: "Desconfie de armadilhas — alguém pode estar sendo desonesto com você." },
+  15: { pos: "O Urso representa força, autoridade e proteção. Você tem — ou encontrará — apoio de alguém poderoso.", neg: "Excesso de controle ou dominação pode estar sufocando situações ao redor." },
+  16: { pos: "A Estrela brilha com esperança e destino. Um guia luminoso aponta o caminho — confie em sua intuição.", neg: "Idealismo excessivo pode afastar você da realidade. Sonhe, mas mantenha os pés no chão." },
+  17: { pos: "A Cegonha traz renovação e transformação positiva. Mudanças chegam para trazer algo melhor.", neg: "Mudanças abruptas podem causar instabilidade. Adapte-se com cautela." },
+  18: { pos: "O Cachorro fala de amizade verdadeira e lealdade. Uma pessoa de confiança está ao seu lado.", neg: "Cuidado com quem se diz amigo — nem toda lealdade é genuína." },
+  19: { pos: "A Torre representa independência e clareza de propósito. Encontre força na sua própria companhia.", neg: "Isolamento excessivo ou orgulho podem estar impedindo conexões importantes." },
+  20: { pos: "O Jardim convida ao social — encontros, eventos e conexões trazem oportunidades valiosas.", neg: "Exposição excessiva ou pressão social podem estar drenando sua energia." },
+  21: { pos: "A Montanha exige persistência. O obstáculo existe, mas pode ser superado com determinação.", neg: "Bloqueios e demoras são inevitáveis agora. Insistir pode desgastar — avalie desvios." },
+  22: { pos: "Os Caminhos anunciam uma escolha importante. Duas possibilidades se apresentam — confie em sua intuição para decidir.", neg: "A indecisão pode ser paralisante. Escolher um caminho, mesmo imperfeito, é melhor que ficar parado." },
+  23: { pos: "Os Ratos alertam para perdas ou desgastes — mas ao percebê-los, você pode agir antes que se agravem.", neg: "Algo está sendo consumido silenciosamente — energia, recursos, relacionamentos. Identifique a fonte." },
+  24: { pos: "O Coração fala de amor, sentimento e paixão. Emoções profundas guiam este momento — acolha-as.", neg: "Feridas emocionais ou amor não correspondido pedem cuidado e cura." },
+  25: { pos: "O Anel representa compromisso, contratos e alianças. Um vínculo importante se fortalece ou se forma.", neg: "Um contrato ou relacionamento pode estar aprisionando em vez de nutrir. Reavalie." },
+  26: { pos: "O Livro guarda segredos prontos para ser revelados. Conhecimento oculto virá à tona no momento certo.", neg: "Algo ainda não foi dito — um segredo pode estar influenciando os acontecimentos." },
+  27: { pos: "A Carta anuncia notícias, documentos e informações importantes que trazem novidades relevantes.", neg: "Uma notícia inesperada ou um documento pendente pode trazer complicações." },
+  28: { pos: "O Senhor representa uma figura masculina madura, protetora e parceira — pode ser você ou alguém próximo.", neg: "Uma figura de autoridade pode estar exercendo influência excessiva ou negativa." },
+  29: { pos: "A Senhora representa intuição feminina, cuidado materno e sabedoria emocional.", neg: "Excesso de emoção ou manipulação sutil podem estar nublando o julgamento." },
+  30: { pos: "Os Lírios trazem paz, pureza e equilíbrio. Um momento de tranquilidade e harmonia se aproxima.", neg: "Uma paz superficial pode estar escondendo tensões não resolvidas." },
+  31: { pos: "O Sol ilumina tudo com sucesso, alegria e clareza. Um período de conquistas e reconhecimento se abre.", neg: "Excesso de exposição ou vaidade podem ofuscar o que realmente importa." },
+  32: { pos: "A Lua fala ao inconsciente — sonhos, intuição e emoções profundas têm mensagens valiosas agora.", neg: "Ilusões e medos noturnos podem estar distorcendo a percepção da realidade." },
+  33: { pos: "A Chave revela a solução — algo que estava bloqueado se abre. A resposta que você buscava está próxima.", neg: "Uma porta se fecha definitivamente. Aceitar isso é o primeiro passo para encontrar outra saída." },
+  34: { pos: "O Peixe traz abundância, fluxo financeiro e prosperidade. Recursos chegam de onde menos se espera.", neg: "Gastos excessivos ou negócios arriscados podem comprometer a estabilidade." },
+  35: { pos: "A Âncora garante estabilidade e firmeza. Você está no lugar certo — permaneça e construa.", neg: "O que deveria ser porto seguro pode estar se tornando aprisionamento. Avalie se fica por escolha." },
+  36: { pos: "A Cruz fala de karma e destino — o que foi semeado agora se colhe. Há uma lição maior neste momento.", neg: "Uma provação karma existe. Enfrente-a com fé — ela tem propósito." }
+};
+
+// Frases de abertura variadas
+const ABERTURAS = [
+  "As cartas se dispõem diante de você e revelam",
+  "O baralho fala com clareza nesta tiragem",
+  "Os mistérios se desfazem carta a carta",
+  "A leitura traz uma mensagem precisa",
+  "O destino mostra seu rosto nesta tiragem"
+];
+
+// Frases de transição
+const TRANSICOES = [
+  "Avançando na leitura,",
+  "As cartas seguintes acrescentam:",
+  "O fio invisível que une as cartas revela ainda",
+  "Há mais a ser dito —",
+  "A mensagem se aprofunda:"
+];
+
+// Frases de encerramento
+const ENCERRAMENTOS = [
+  "As cartas sussurram que o momento pede atenção e intenção. Confie no que veio à tona.",
+  "Que esta leitura ilumine seu caminho. O que as cartas revelam, só você pode transformar.",
+  "A sabedoria cigana diz: nada é permanente — nem o obstáculo, nem a benção. Siga em frente.",
+  "Use esta mensagem como lanterna, não como destino fixo. O livre-arbítrio é sempre seu.",
+  "As cartas mostraram o que está em movimento. O que fazer com isso está em suas mãos."
+];
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function generateLocalReading() {
+  const cards = drawnCards;
+  const positions = spreadPositions;
+  const n = cards.length;
+
+  // Determina tom geral (positivo, misto, desafiador) baseado nas cartas
+  const positiveIds = new Set([2,4,5,9,12,13,15,16,17,18,20,24,25,30,31,33,34,35]);
+  const challengingIds = new Set([6,7,8,10,11,21,23,36]);
+  let posCount = cards.filter(c => positiveIds.has(c.id)).length;
+  let chalCount = cards.filter(c => challengingIds.has(c.id)).length;
+  const tone = posCount >= chalCount ? 'pos' : 'neg';
+
+  const paragraphs = [];
+
+  // ── PARÁGRAFO 1: contexto / carta principal ──────────────────────────────
+  const c0 = cards[0];
+  const m0 = CARD_MEANINGS[c0.id];
+  let p1 = `${pick(ABERTURAS)}: ${m0[tone]}`;
+  paragraphs.push(p1);
+
+  // ── PARÁGRAFO 2: cartas do meio / desenvolvimento ────────────────────────
+  if (n === 1) {
+    // carta única: aprofunda
+    const kws = c0.keywords.slice(0, 3).join(', ');
+    paragraphs.push(`${c0.name} carrega as energias de ${kws}. Reflita sobre como essas forças aparecem na sua vida agora — às vezes uma única carta diz mais do que um volume inteiro de palavras.`);
+  } else if (n === 3) {
+    const c1 = cards[1]; const m1 = CARD_MEANINGS[c1.id];
+    const c2 = cards[2]; const m2 = CARD_MEANINGS[c2.id];
+    paragraphs.push(`${pick(TRANSICOES)} o presente, representado por ${c1.name}, revela que ${m1[tone].toLowerCase()} Já o futuro, guardado por ${c2.name}, aponta para ${m2[tone].toLowerCase()}`);
+  } else if (n >= 5) {
+    const mid = cards.slice(1, 4);
+    const midText = mid.map((c, i) => {
+      const m = CARD_MEANINGS[c.id];
+      return `${c.name} (${positions[i+1].toLowerCase()}) indica ${m[tone].toLowerCase()}`;
+    }).join('; ');
+    paragraphs.push(`${pick(TRANSICOES)} ${midText}.`);
+  }
+
+  // ── PARÁGRAFO 3: síntese e encerramento ──────────────────────────────────
+  if (n >= 3) {
+    const last = cards[n-1];
+    const mLast = CARD_MEANINGS[last.id];
+    paragraphs.push(`Por fim, ${last.name} como ${positions[n-1].toLowerCase()} entrega a mensagem derradeira: ${mLast[tone].toLowerCase()} ${pick(ENCERRAMENTOS)}`);
+  } else {
+    paragraphs.push(pick(ENCERRAMENTOS));
+  }
+
+  return paragraphs.join('\n\n');
+}
+
+function callClaude() {
   setTimeout(() => {
+    const text = generateLocalReading();
     const box = document.getElementById('interpretation-box');
-    const keywords = drawnCards.flatMap(c => c.keywords).map(k => `<span class="keyword-pill">${k}</span>`).join('');
-    box.innerHTML = `<h3>Sua Mensagem</h3><p>As energias de ${drawnCards[0].name} dominam a leitura. O momento pede foco em: </p><div>${keywords}</div>`;
-  }, 1000);
+    box.innerHTML = `
+      <h3>✦ A LEITURA DAS CARTAS</h3>
+      <div class="interpretation-text">${text.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
+      <div class="card-keywords">${drawnCards.flatMap(c => c.keywords).slice(0, 8).map(k => `<span class="keyword-pill">${k}</span>`).join('')}</div>
+    `;
+  }, 1800);
 }
 
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0); // Garante que a tela comece do topo no mobile
 }
 
 function resetAll() {
+  drawnCards = [];
+  currentSpread = null;
   showScreen('screen-question');
 }
+
+function changeQuestion() {
+  drawnCards = [];
+  remaining = [...CARDS].sort(() => Math.random() - 0.5);
+  document.getElementById('card-pile').style.opacity = '1';
+  document.getElementById('card-pile').style.pointerEvents = 'auto';
+  document.getElementById('reveal-btn').style.display = 'none';
+  renderSlots();
+  updatePileCounter();
+  document.getElementById('draw-instruction').textContent = 'Concentre-se e clique no baralho para revelar as cartas';
+  showScreen('screen-spread');
+}
+
+// Start
+showScreen('screen-question');
 </script>
 </body>
 </html>
