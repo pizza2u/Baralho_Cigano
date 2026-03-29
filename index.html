@@ -641,6 +641,7 @@
 
   <!-- SCREEN 1: CHOOSE SPREAD -->
   <div id="screen-question" class="active">
+    <div id="spread-options-wrap">
     <p class="spread-intro">Escolha o tipo de tiragem que deseja fazer esta vez</p>
     <div class="spread-options">
       <button class="spread-btn" onclick="selectSpread(1, 'Carta do Momento', ['O Presente'])">
@@ -663,15 +664,10 @@
 
   <!-- SCREEN 2: DRAW CARDS -->
   <div id="screen-spread">
-    <div class="question-box">
-      <label>✦ FORMULE SUA PERGUNTA OU INTENÇÃO</label>
-      <textarea id="question-input" placeholder="Escreva sua pergunta, ou deixe em branco para uma leitura geral sobre sua vida..." maxlength="300"></textarea>
-    </div>
-
     <div class="deck-area">
       <p class="deck-instruction" id="draw-instruction">Concentre-se em sua pergunta e clique no baralho para revelar as cartas</p>
       <div class="slots-area" id="slots-area"></div>
-      <div class="card-pile" id="card-pile" onclick="drawCard()">
+      <div class="card-pile" id="card-pile" onclick="drawCard()" ontouchstart="handleTouch(event)">
         <div class="pile-layer"></div>
         <div class="pile-layer"></div>
         <div class="pile-layer"></div>
@@ -758,6 +754,9 @@ function selectSpread(count, name, positions) {
   drawnCards = [];
   remaining = [...CARDS].sort(() => Math.random() - 0.5);
 
+  // Esconde opções ao selecionar
+  document.getElementById('spread-options-wrap').style.display = 'none';
+
   showScreen('screen-spread');
   renderSlots();
   updatePileCounter();
@@ -783,6 +782,11 @@ function updatePileCounter() {
   const el = document.getElementById('pile-counter');
   if (needed <= 0) el.textContent = '';
   else el.textContent = `${drawnCards.length} de ${currentSpread.count} carta${currentSpread.count > 1 ? 's' : ''} revelada${drawnCards.length !== 1 ? 's' : ''}`;
+}
+
+function handleTouch(e) {
+  e.preventDefault();
+  drawCard();
 }
 
 function drawCard() {
@@ -814,13 +818,10 @@ function drawCard() {
 }
 
 function goToReading() {
-  const question = document.getElementById('question-input').value.trim();
   showScreen('screen-reading');
 
   document.getElementById('spread-name-display').textContent = `✦ ${currentSpread.name} ✦`;
-  document.getElementById('question-display').textContent = question
-    ? `"${question}"`
-    : 'Leitura geral — a mensagem do momento';
+  document.getElementById('question-display').textContent = 'Leitura geral — a mensagem do momento';
 
   const revealArea = document.getElementById('cards-revealed');
   revealArea.innerHTML = '';
@@ -838,7 +839,7 @@ function goToReading() {
     revealArea.appendChild(el);
   });
 
-  callClaude(question);
+  callClaude();
 }
 
 // ── INTERPRETAÇÕES LOCAIS ────────────────────────────────────────────────────
@@ -911,7 +912,7 @@ const ENCERRAMENTOS = [
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-function generateLocalReading(question) {
+function generateLocalReading() {
   const cards = drawnCards;
   const positions = spreadPositions;
   const n = cards.length;
@@ -929,7 +930,6 @@ function generateLocalReading(question) {
   const c0 = cards[0];
   const m0 = CARD_MEANINGS[c0.id];
   let p1 = `${pick(ABERTURAS)}: ${m0[tone]}`;
-  if (question) p1 += ` Em relação à sua pergunta sobre "${question}", esta é a energia central que permeia a situação.`;
   paragraphs.push(p1);
 
   // ── PARÁGRAFO 2: cartas do meio / desenvolvimento ────────────────────────
@@ -962,10 +962,9 @@ function generateLocalReading(question) {
   return paragraphs.join('\n\n');
 }
 
-function callClaude(question) {
-  // Pequeno delay para dar sensação de "consulta"
+function callClaude() {
   setTimeout(() => {
-    const text = generateLocalReading(question);
+    const text = generateLocalReading();
     const box = document.getElementById('interpretation-box');
     box.innerHTML = `
       <h3>✦ A LEITURA DAS CARTAS</h3>
@@ -983,12 +982,10 @@ function showScreen(id) {
 function resetAll() {
   drawnCards = [];
   currentSpread = null;
-  document.getElementById('question-input').value = '';
   showScreen('screen-question');
 }
 
 function changeQuestion() {
-  document.getElementById('question-input').value = '';
   drawnCards = [];
   remaining = [...CARDS].sort(() => Math.random() - 0.5);
   document.getElementById('card-pile').style.opacity = '1';
@@ -996,7 +993,7 @@ function changeQuestion() {
   document.getElementById('reveal-btn').style.display = 'none';
   renderSlots();
   updatePileCounter();
-  document.getElementById('draw-instruction').textContent = 'Concentre-se em sua pergunta e clique no baralho para revelar as cartas';
+  document.getElementById('draw-instruction').textContent = 'Concentre-se e clique no baralho para revelar as cartas';
   showScreen('screen-spread');
 }
 
