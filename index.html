@@ -726,21 +726,6 @@
     <div class="divider"></div>
   </header>
 
-  <!-- SCREEN 0: API KEY -->
-  <div id="screen-apikey">
-    <div class="apikey-box">
-      <label style="display:block;font-family:'Cinzel Decorative',cursive;font-size:0.8rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:14px;">✦ CHAVE DA API ANTHROPIC</label>
-      <p>Para usar este app fora do Claude.ai, você precisa de uma chave de API da Anthropic. Ela fica salva apenas no seu navegador (<code style="color:var(--gold);font-size:0.85em">localStorage</code>) e nunca é enviada a nenhum servidor além da Anthropic.</p>
-      <p>Não tem uma chave? <a href="https://console.anthropic.com/settings/keys" target="_blank">Crie em console.anthropic.com →</a></p>
-      <div class="key-input-wrap">
-        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
-        <button class="toggle-key" onclick="toggleKeyVisibility()" title="Mostrar/ocultar">👁</button>
-      </div>
-      <p class="key-note">⚠ Use apenas para uso pessoal. Não compartilhe o arquivo com sua chave visível.</p>
-      <button class="btn-primary" onclick="saveApiKey()">✦ Salvar e Continuar</button>
-    </div>
-  </div>
-
   <!-- SCREEN 1: CHOOSE SPREAD -->
   <div id="screen-question" class="active">
     <div style="text-align:right;margin-bottom:4px;">
