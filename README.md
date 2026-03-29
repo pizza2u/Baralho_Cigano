@@ -33,7 +33,7 @@ Clique:
 
 ## Contexto do experimento
 
-O objetivo não era criar o melhor app de tarot do mundo — era testar **até onde o Claude consegue ir** numa única conversa, partindo do zero:
+O objetivo não era criar o melhor app de tarot do mundo — era testar **até onde o Claude consegue ir** numa única conversa (única frase e pedido na real), partindo do zero:
 
 - Layout e visual foram gerados pelo Claude com direção estética própria
 - A lógica de interpretação foi construída e depois refatorada (versão original usava a API da Anthropic; depois migrei para modo offline por sugestão do próprio Claude)
