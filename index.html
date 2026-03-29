@@ -113,114 +113,14 @@
     opacity: 0.6;
   }
 
-  /* SCREEN: QUESTION */
-  #screen-apikey, #screen-question, #screen-spread, #screen-reading {
+  /* SCREENS */
+  #screen-question, #screen-spread, #screen-reading {
     display: none;
     animation: fadeIn 0.6s ease;
   }
-  #screen-apikey.active, #screen-question.active, #screen-spread.active, #screen-reading.active {
+  #screen-question.active, #screen-spread.active, #screen-reading.active {
     display: block;
   }
-
-  /* API KEY SCREEN */
-  .apikey-box {
-    background: linear-gradient(135deg, #1e1208, #0f0a05);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 32px 28px;
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .apikey-box p {
-    font-style: italic;
-    color: var(--text-dim);
-    font-size: 0.9rem;
-    line-height: 1.7;
-    margin-bottom: 20px;
-  }
-
-  .apikey-box a {
-    color: var(--gold);
-    text-decoration: none;
-  }
-
-  .apikey-box a:hover { text-decoration: underline; }
-
-  .key-input-wrap {
-    position: relative;
-    margin-bottom: 16px;
-  }
-
-  .key-input-wrap input {
-    width: 100%;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'IM Fell English', serif;
-    font-size: 0.9rem;
-    padding: 12px 44px 12px 14px;
-    transition: border-color 0.3s;
-    letter-spacing: 0.04em;
-  }
-
-  .key-input-wrap input:focus {
-    outline: none;
-    border-color: rgba(201,168,76,0.5);
-  }
-
-  .key-input-wrap input::placeholder { color: var(--text-dim); font-style: italic; }
-
-  .toggle-key {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 4px;
-    transition: color 0.2s;
-  }
-
-  .toggle-key:hover { color: var(--gold); }
-
-  .key-note {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    font-style: italic;
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
-
-  .api-key-indicator {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.78rem;
-    color: var(--text-dim);
-    font-style: italic;
-    cursor: pointer;
-    padding: 6px 10px;
-    border-radius: 4px;
-    transition: background 0.2s;
-    float: right;
-  }
-
-  .api-key-indicator:hover { background: rgba(201,168,76,0.06); color: var(--gold); }
-
-  .dot-status {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--text-dim);
-    flex-shrink: 0;
-  }
-
-  .dot-status.active { background: #5c9e5c; box-shadow: 0 0 6px rgba(92,158,92,0.5); }
 
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -709,11 +609,24 @@
 
   .card-pile { animation: glow-pulse 3s ease infinite; }
 
-  /* responsive */
+  /* responsive mobile */
   @media(max-width: 500px) {
-    .revealed-card { width: 100px; }
-    .revealed-card .big-card { width: 100px; height: 146px; }
-    .revealed-card .big-symbol { font-size: 2.2rem; }
+    header { padding: 20px 0 12px; }
+    h1 { font-size: 1.3rem; }
+    .container { padding: 12px 12px 50px; }
+    .spread-options { grid-template-columns: 1fr; gap: 10px; }
+    .spread-btn { padding: 14px 12px; }
+    .question-box { padding: 18px; }
+    .revealed-card { width: 90px; }
+    .revealed-card .big-card { width: 90px; height: 132px; }
+    .revealed-card .big-symbol { font-size: 2rem; }
+    .revealed-card .big-name { font-size: 0.5rem; }
+    .interpretation { padding: 18px; }
+    .card-slot { width: 80px; height: 116px; }
+    .playing-card { width: 76px; height: 112px; }
+    .slots-area { gap: 8px; }
+    .actions { flex-direction: column; align-items: center; }
+    .btn-secondary { width: 100%; text-align: center; }
   }
 </style>
 </head>
@@ -727,6 +640,7 @@
   </header>
 
   <!-- SCREEN 1: CHOOSE SPREAD -->
+  <div id="screen-question" class="active">
     <p class="spread-intro">Escolha o tipo de tiragem que deseja fazer esta vez</p>
     <div class="spread-options">
       <button class="spread-btn" onclick="selectSpread(1, 'Carta do Momento', ['O Presente'])">
