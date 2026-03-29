@@ -113,14 +113,114 @@
     opacity: 0.6;
   }
 
-  /* SCREENS */
-  #screen-question, #screen-spread, #screen-reading {
+  /* SCREEN: QUESTION */
+  #screen-apikey, #screen-question, #screen-spread, #screen-reading {
     display: none;
     animation: fadeIn 0.6s ease;
   }
-  #screen-question.active, #screen-spread.active, #screen-reading.active {
+  #screen-apikey.active, #screen-question.active, #screen-spread.active, #screen-reading.active {
     display: block;
   }
+
+  /* API KEY SCREEN */
+  .apikey-box {
+    background: linear-gradient(135deg, #1e1208, #0f0a05);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 32px 28px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .apikey-box p {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .apikey-box a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .apikey-box a:hover { text-decoration: underline; }
+
+  .key-input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .key-input-wrap input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'IM Fell English', serif;
+    font-size: 0.9rem;
+    padding: 12px 44px 12px 14px;
+    transition: border-color 0.3s;
+    letter-spacing: 0.04em;
+  }
+
+  .key-input-wrap input:focus {
+    outline: none;
+    border-color: rgba(201,168,76,0.5);
+  }
+
+  .key-input-wrap input::placeholder { color: var(--text-dim); font-style: italic; }
+
+  .toggle-key {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .toggle-key:hover { color: var(--gold); }
+
+  .key-note {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .api-key-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-style: italic;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    float: right;
+  }
+
+  .api-key-indicator:hover { background: rgba(201,168,76,0.06); color: var(--gold); }
+
+  .dot-status {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .dot-status.active { background: #5c9e5c; box-shadow: 0 0 6px rgba(92,158,92,0.5); }
 
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -609,24 +709,11 @@
 
   .card-pile { animation: glow-pulse 3s ease infinite; }
 
-  /* responsive mobile */
+  /* responsive */
   @media(max-width: 500px) {
-    header { padding: 20px 0 12px; }
-    h1 { font-size: 1.3rem; }
-    .container { padding: 12px 12px 50px; }
-    .spread-options { grid-template-columns: 1fr; gap: 10px; }
-    .spread-btn { padding: 14px 12px; }
-    .question-box { padding: 18px; }
-    .revealed-card { width: 90px; }
-    .revealed-card .big-card { width: 90px; height: 132px; }
-    .revealed-card .big-symbol { font-size: 2rem; }
-    .revealed-card .big-name { font-size: 0.5rem; }
-    .interpretation { padding: 18px; }
-    .card-slot { width: 80px; height: 116px; }
-    .playing-card { width: 76px; height: 112px; }
-    .slots-area { gap: 8px; }
-    .actions { flex-direction: column; align-items: center; }
-    .btn-secondary { width: 100%; text-align: center; }
+    .revealed-card { width: 100px; }
+    .revealed-card .big-card { width: 100px; height: 146px; }
+    .revealed-card .big-symbol { font-size: 2.2rem; }
   }
 </style>
 </head>
@@ -639,9 +726,29 @@
     <div class="divider"></div>
   </header>
 
+  <!-- SCREEN 0: API KEY -->
+  <div id="screen-apikey">
+    <div class="apikey-box">
+      <label style="display:block;font-family:'Cinzel Decorative',cursive;font-size:0.8rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:14px;">✦ CHAVE DA API ANTHROPIC</label>
+      <p>Para usar este app fora do Claude.ai, você precisa de uma chave de API da Anthropic. Ela fica salva apenas no seu navegador (<code style="color:var(--gold);font-size:0.85em">localStorage</code>) e nunca é enviada a nenhum servidor além da Anthropic.</p>
+      <p>Não tem uma chave? <a href="https://console.anthropic.com/settings/keys" target="_blank">Crie em console.anthropic.com →</a></p>
+      <div class="key-input-wrap">
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
+        <button class="toggle-key" onclick="toggleKeyVisibility()" title="Mostrar/ocultar">👁</button>
+      </div>
+      <p class="key-note">⚠ Use apenas para uso pessoal. Não compartilhe o arquivo com sua chave visível.</p>
+      <button class="btn-primary" onclick="saveApiKey()">✦ Salvar e Continuar</button>
+    </div>
+  </div>
+
   <!-- SCREEN 1: CHOOSE SPREAD -->
   <div id="screen-question" class="active">
-    <div id="spread-options-wrap">
+    <div style="text-align:right;margin-bottom:4px;">
+      <span class="api-key-indicator" onclick="showScreen('screen-apikey')" title="Alterar chave">
+        <span class="dot-status" id="key-dot"></span>
+        <span id="key-label">chave não configurada</span>
+      </span>
+    </div>
     <p class="spread-intro">Escolha o tipo de tiragem que deseja fazer esta vez</p>
     <div class="spread-options">
       <button class="spread-btn" onclick="selectSpread(1, 'Carta do Momento', ['O Presente'])">
@@ -664,10 +771,15 @@
 
   <!-- SCREEN 2: DRAW CARDS -->
   <div id="screen-spread">
+    <div class="question-box">
+      <label>✦ FORMULE SUA PERGUNTA OU INTENÇÃO</label>
+      <textarea id="question-input" placeholder="Escreva sua pergunta, ou deixe em branco para uma leitura geral sobre sua vida..." maxlength="300"></textarea>
+    </div>
+
     <div class="deck-area">
       <p class="deck-instruction" id="draw-instruction">Concentre-se em sua pergunta e clique no baralho para revelar as cartas</p>
       <div class="slots-area" id="slots-area"></div>
-      <div class="card-pile" id="card-pile" onclick="drawCard()" ontouchstart="handleTouch(event)">
+      <div class="card-pile" id="card-pile" onclick="drawCard()">
         <div class="pile-layer"></div>
         <div class="pile-layer"></div>
         <div class="pile-layer"></div>
@@ -754,9 +866,6 @@ function selectSpread(count, name, positions) {
   drawnCards = [];
   remaining = [...CARDS].sort(() => Math.random() - 0.5);
 
-  // Esconde opções ao selecionar
-  document.getElementById('spread-options-wrap').style.display = 'none';
-
   showScreen('screen-spread');
   renderSlots();
   updatePileCounter();
@@ -782,11 +891,6 @@ function updatePileCounter() {
   const el = document.getElementById('pile-counter');
   if (needed <= 0) el.textContent = '';
   else el.textContent = `${drawnCards.length} de ${currentSpread.count} carta${currentSpread.count > 1 ? 's' : ''} revelada${drawnCards.length !== 1 ? 's' : ''}`;
-}
-
-function handleTouch(e) {
-  e.preventDefault();
-  drawCard();
 }
 
 function drawCard() {
@@ -818,10 +922,13 @@ function drawCard() {
 }
 
 function goToReading() {
+  const question = document.getElementById('question-input').value.trim();
   showScreen('screen-reading');
 
   document.getElementById('spread-name-display').textContent = `✦ ${currentSpread.name} ✦`;
-  document.getElementById('question-display').textContent = 'Leitura geral — a mensagem do momento';
+  document.getElementById('question-display').textContent = question
+    ? `"${question}"`
+    : 'Leitura geral — a mensagem do momento';
 
   const revealArea = document.getElementById('cards-revealed');
   revealArea.innerHTML = '';
@@ -839,7 +946,7 @@ function goToReading() {
     revealArea.appendChild(el);
   });
 
-  callClaude();
+  callClaude(question);
 }
 
 // ── INTERPRETAÇÕES LOCAIS ────────────────────────────────────────────────────
@@ -912,7 +1019,7 @@ const ENCERRAMENTOS = [
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-function generateLocalReading() {
+function generateLocalReading(question) {
   const cards = drawnCards;
   const positions = spreadPositions;
   const n = cards.length;
@@ -930,6 +1037,7 @@ function generateLocalReading() {
   const c0 = cards[0];
   const m0 = CARD_MEANINGS[c0.id];
   let p1 = `${pick(ABERTURAS)}: ${m0[tone]}`;
+  if (question) p1 += ` Em relação à sua pergunta sobre "${question}", esta é a energia central que permeia a situação.`;
   paragraphs.push(p1);
 
   // ── PARÁGRAFO 2: cartas do meio / desenvolvimento ────────────────────────
@@ -962,9 +1070,10 @@ function generateLocalReading() {
   return paragraphs.join('\n\n');
 }
 
-function callClaude() {
+function callClaude(question) {
+  // Pequeno delay para dar sensação de "consulta"
   setTimeout(() => {
-    const text = generateLocalReading();
+    const text = generateLocalReading(question);
     const box = document.getElementById('interpretation-box');
     box.innerHTML = `
       <h3>✦ A LEITURA DAS CARTAS</h3>
@@ -982,10 +1091,12 @@ function showScreen(id) {
 function resetAll() {
   drawnCards = [];
   currentSpread = null;
+  document.getElementById('question-input').value = '';
   showScreen('screen-question');
 }
 
 function changeQuestion() {
+  document.getElementById('question-input').value = '';
   drawnCards = [];
   remaining = [...CARDS].sort(() => Math.random() - 0.5);
   document.getElementById('card-pile').style.opacity = '1';
@@ -993,7 +1104,7 @@ function changeQuestion() {
   document.getElementById('reveal-btn').style.display = 'none';
   renderSlots();
   updatePileCounter();
-  document.getElementById('draw-instruction').textContent = 'Concentre-se e clique no baralho para revelar as cartas';
+  document.getElementById('draw-instruction').textContent = 'Concentre-se em sua pergunta e clique no baralho para revelar as cartas';
   showScreen('screen-spread');
 }
 
