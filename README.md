@@ -1,5 +1,3 @@
-[Baralho Cigano](https://pizza2u.github.io/Baralho_Cigano/)
-
 # 🔮 Baralho Cigano
 
 > Experimento gerado com IA — criado inteiramente numa conversa com o [Claude](https://claude.ai) (Anthropic), sem escrever uma linha de código manualmente.
@@ -30,8 +28,8 @@ A ideia era simples: pedir ao Claude que construísse um app funcional e visualm
 - Roda direto no navegador, offline
 
 ## Como usar
-
-Baixe o arquivo `baralho-cigano.html` e abra no navegador. Só isso.
+Clique:
+[Baralho Cigano](https://pizza2u.github.io/Baralho_Cigano/)
 
 ## Contexto do experimento
 
